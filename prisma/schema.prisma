@@ -1,0 +1,76 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// Models
+
+model User {
+  id          String    @id @default(cuid())
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  deletedAt   DateTime?
+  displayName String
+  avatarUrl   String?
+  role        Role      @default(USER)
+  isActive    Boolean   @default(true)
+
+  discordProfile DiscordProfile?
+  sessios        Session[]
+
+  @@map("users")
+}
+
+model DiscordProfile {
+  id             String   @id @default(cuid())
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  discordId      String   @unique
+  username       String
+  globalName     String?
+  discriminator  String
+  avatarHash     String?
+  bannerHash     String?
+  accentColor    Int?
+  locale         String?
+  premiumType    Int?
+  publicFlags    Int?
+  verified       Boolean  @default(false)
+  email          String?
+  accessToken    String
+  refreshToken   String
+  tokenExpiresAt DateTime
+  userId         String   @unique
+  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([discordId])
+  @@map("discord_profiles")
+}
+
+model Session {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  expiresAt DateTime
+  userAgent String?
+  ipAddress String?
+  isRevoked Boolean  @default(false)
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("sessions")
+}
+
+enum Role {
+  USER
+  ADMIN
+  MODERATOR
+}
