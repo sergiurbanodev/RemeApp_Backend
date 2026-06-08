@@ -11,3 +11,13 @@ export function buildDiscordAvatarUrl(
   const ext = avatarHash.startsWith('a_') ? 'gif' : 'webp';
   return `https://cdn.discordapp.com/avatars/${discordId}/${avatarHash}.${ext}?size=${size}`;
 }
+
+export function buildDiscordBannerUrl(
+  discordId: string,
+  bannerHash: string | null,
+  size: 512 | 1024 | 2048 = 512,
+): string | null {
+  if (!bannerHash) return null;
+  const ext = bannerHash.startsWith('a_') ? 'gif' : 'webp';
+  return `https://cdn.discordapp.com/banners/${discordId}/${bannerHash}.${ext}?size=${size}`;
+}
