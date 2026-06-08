@@ -3,6 +3,7 @@ import { JwtService } from '@nestjs/jwt';
 import { PrismaService } from 'src/database/prisma.service';
 import { DiscordProfileWithTokens } from './types/discord-profile.type';
 import { buildDiscordAvatarUrl } from 'src/common/utils/discord.utils';
+import { buildDiscordBannerUrl } from '../../common/utils/discord.utils';
 
 @Injectable()
 export class AuthService {
@@ -36,6 +37,7 @@ export class AuthService {
       data: {
         displayName: profile.global_name ?? profile.username,
         avatarUrl: buildDiscordAvatarUrl(profile.id, profile.avatar ?? null),
+        bannerUrl: buildDiscordBannerUrl(profile.id, profile.banner ?? null),
         discordProfile: {
           create: {
             discordId: profile.id,
